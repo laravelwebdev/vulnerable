@@ -23,8 +23,12 @@ final class Vulnerable
             return;
         }
 
-        $result = Process::run(command: 'composer audit -f json --locked');
-
+        $composer = config('app.composer');
+        $devFlag = $this->option('dev') ? '' : '--no-dev';
+        // shell_exec('composer2 update');
+        $process = Process::fromShellCommandline("$composer audit -f json --locked $devFlag", base_path(), ['COMPOSER_HOME' => '../../.cache/composer']);
+        
+        $result = $process->run();
         /**
          * @link https://github.com/composer/composer/issues/7323
          */
